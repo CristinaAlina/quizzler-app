@@ -7,24 +7,24 @@ class QuizBrain:
         self.question_number = 0  # all quizzes are starting with first question
         self.score = 0
         self.question_list = question_list
+        self.current_question = None
 
     def next_question(self):
-        """Ask the user the current question number and returns the answer"""
-        current_question = self.question_list[self.question_number]
+        """Returns a string that contains the question's number and the question's text"""
+        self.current_question = self.question_list[self.question_number]
         self.question_number += 1
-        question_text = html.unescape(current_question.text)
-        user_answer = input(f"Q.{self.question_number}: {question_text} (True/False)?: ")
-        self.check_answer(user_answer, current_question.answer)
+        question_text = html.unescape(self.current_question.text)
+        return f"Q.{self.question_number}: {question_text}"
 
-    def check_answer(self, user_answer, correct_answer):
+    def check_answer(self, user_answer) -> bool:
+        """Returns True if the user answer is correct and increase the score by 1, and returns False otherwise"""
+        correct_answer = self.current_question.answer
         if user_answer.lower() == correct_answer.lower():
             self.score += 1
-            print("You got it right!")
+            return True
         else:
-            print("That's wrong. ")
-        print(f"The correct answer was: {correct_answer}.")
-        print(f"Your current score is: {self.score}/{self.question_number}.")
-        print("\n")
+            return False
 
     def still_has_questions(self):
+        """Returns True if current question number is less than number of questions and False otherwise"""
         return self.question_number < len(self.question_list)
